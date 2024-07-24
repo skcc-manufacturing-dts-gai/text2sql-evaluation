@@ -49,13 +49,18 @@ SHOW TABLES; # Data Insert 확인
     - text2sql-evaluation/llm/exp_result/sql_output_kg/predict_mini_dev_gpt-4_mysql.json
 
 ### 4. Set DB Connection
-- Modifying connect_postgresql in text2sql-evaluation/llm/src/evaluation_utils.py
+- Modifying connect_mysql in text2sql-evaluation/llm/src/evaluation_utils.py
 ```python
-def connect_postgresql():
+def connect_mysql():
     # Open database connection
-    # Connect to the database
-    db = psycopg2.connect(
-        "dbname=BIRD user=postgres host=localhost password=1q2w3e4r5t!@ port=5432" # FIX THIS LINE
+    # Connect to the database"
+    db = pymysql.connect(
+        host="localhost",
+        user="root",
+        password="1q2w3e4r5t",
+        database="BIRD_MINI_DEV",
+        # unix_socket="/mnt/mysql/mysql.sock",
+        # port=3306,
     )
     return db
 ```
