@@ -9,7 +9,7 @@
 ```bash
 docker pull mysql:8.0.36
 
-docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=1q2w3e4r5t --name mysql-bird -v /mnt/mysql:/var/lib/mysql -v /:/mnt/host mysql:8.0.36 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=1q2w3e4r5t --name mysql-bird --restart unless_stopped -v /mnt/mysql:/var/lib/mysql -v /:/mnt/host mysql:8.0.36 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
 cd {path/to/dir}/MINIDEV_mysql/BIRD_dev.sql
 
