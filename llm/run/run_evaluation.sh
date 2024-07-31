@@ -39,11 +39,11 @@ python3 -u ./src/evaluation_ex.py --db_root_path ${db_root_path} --predicted_jso
 --diff_json_path ${diff_json_path} --meta_time_out ${meta_time_out} --engine ${engine} --sql_dialect ${sql_dialect} --test_dir ${test_dir}
 
 echo "starting to compare with knowledge for ves engine: ${engine} sql_dialect: ${sql_dialect}"
-python3 -u ./src/evaluation_ves.py --db_root_path ${db_root_path} --predicted_sql_path ${predicted_json_path} --data_mode ${data_mode} \
+python3 -u ./src/evaluation_ves.py --db_root_path ${db_root_path} --predicted_json_path ${predicted_json_path} --data_mode ${data_mode} \
 --ground_truth_path ${ground_truth_path} --num_cpus ${num_cpus} --mode_gt ${mode_gt} --mode_predict ${mode_predict} --gold_sql_path ${gold_sql_path} \
 --diff_json_path ${diff_json_path} --meta_time_out ${meta_time_out} --engine ${engine} --sql_dialect ${sql_dialect} --test_dir ${test_dir}
 
 echo "starting to compare with knowledge for soft-f1 engine: ${engine} sql_dialect: ${sql_dialect}"
-python3 -u ./src/evaluation_f1.py --db_root_path ${db_root_path} --predicted_sql_path ${predicted_json_path} --data_mode ${data_mode} \
+python3 -u ./src/evaluation_f1.py --db_root_path ${db_root_path} --predicted_json_path ${predicted_json_path} --data_mode ${data_mode} \
 --ground_truth_path ${ground_truth_path} --num_cpus ${num_cpus} --mode_gt ${mode_gt} --mode_predict ${mode_predict} --gold_sql_path ${gold_sql_path} \
 --diff_json_path ${diff_json_path} --meta_time_out ${meta_time_out} --engine ${engine} --sql_dialect ${sql_dialect} --test_dir ${test_dir}
