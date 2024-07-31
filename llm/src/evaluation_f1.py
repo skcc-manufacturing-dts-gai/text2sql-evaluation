@@ -201,7 +201,7 @@ def compute_f1_by_diff(exec_results, diff_json_path):
 if __name__ == "__main__":
     args_parser = argparse.ArgumentParser()
     args_parser.add_argument(
-        "--predicted_sql_path", type=str, required=True, default=""
+        "--predicted_json_path", type=str, required=True, default=""
     )
     args_parser.add_argument("--ground_truth_path", type=str, required=True, default="")
     args_parser.add_argument("--data_mode", type=str, required=True, default="dev")
@@ -211,6 +211,7 @@ if __name__ == "__main__":
     args_parser.add_argument("--mode_gt", type=str, default="gt")
     args_parser.add_argument("--mode_predict", type=str, default="gpt")
     args_parser.add_argument("--difficulty", type=str, default="simple")
+    args_parser.add_argument("--gold_sql_path", type=str, default="")
     args_parser.add_argument("--diff_json_path", type=str, default="")
     args_parser.add_argument("--engine", type=str, default="")
     args_parser.add_argument("--sql_dialect", type=str, default="SQLite")
@@ -219,7 +220,8 @@ if __name__ == "__main__":
     exec_result = []
 
     pred_queries, db_paths = package_sqls(
-        args.predicted_sql_path,
+        args.gold_sql_path,
+        args.predicted_json_path,
         args.db_root_path,
         args.engine,
         sql_dialect=args.sql_dialect,
@@ -228,13 +230,15 @@ if __name__ == "__main__":
     )
     # generate ground truth sqls:
     gt_queries, db_paths_gt = package_sqls(
-        args.ground_truth_path,
+        args.gold_sql_path,
+        args.predicted_json_path,
         args.db_root_path,
         args.engine,
         sql_dialect=args.sql_dialect,
         mode="gt",
         data_mode=args.data_mode,
     )
+
 
     query_pairs = list(zip(pred_queries, gt_queries))
 
@@ -264,10 +268,9 @@ if __name__ == "__main__":
     config = {
         "db_root_path": args.db_root_path,
         "data_mode": args.data_mode,
-        "diff_json_path": args.diff_json_path,
-        "predicted_sql_path": os.path.join(args.predicted_sql_path, f"predict_{args.data_mode}_{args.engine}_{args.sql_dialect.lower()}.json"),
-        "ground_truth_json_path": os.path.join(args.ground_truth_path, f"{args.data_mode}_{args.sql_dialect.lower()}.json"),
-        "ground_truth_sql_path": os.path.join(args.ground_truth_path, f"{args.data_mode}_{args.sql_dialect.lower()}_gold.sql"),
+        "ground_truth_gold_sql_path":  args.gold_sql_path,
+        "ground_truth_diff_json_path": args.diff_json_path,
+        "predicted_sql_path": args.predicted_json_path,
         "num_cpus": args.num_cpus,
         "meta_time_out": args.meta_time_out,
         "mode_gt": args.mode_gt,

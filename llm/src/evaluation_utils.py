@@ -22,25 +22,32 @@ def connect_postgresql():
     return db
 
 
-def connect_mysql():
+def connect_mysql(*args, **kwargs):
     # Open database connection
     # Connect to the database"
-    db = pymysql.connect(
-        host="localhost",
-        user="root",
-        password="1q2w3e4r5t",
-        database="BIRD_MINI_DEV",
-        # unix_socket="/mnt/mysql/mysql.sock",
-        # port=3306,
-    )
+    if all(key in kwargs for key in ['host', 'user', 'password', 'mydb']):
+        db = pymysql.connect(
+            host=kwargs['host'],
+            user=kwargs['user'],
+            password=kwargs['password'],
+            database=kwargs['mydb'],
+        )
+    else:
+        db = pymysql.connect(
+            host='localhost',
+            user='myuser',
+            password='mysql1q2w3e!',
+            database='mydb',
+        )
+
     return db
 
 
-def connect_db(sql_dialect, db_path):
+def connect_db(sql_dialect, db_path, *args, **kwargs):
     if sql_dialect == "SQLite":
         conn = sqlite3.connect(db_path)
     elif sql_dialect == "MySQL":
-        conn = connect_mysql()
+        conn = connect_mysql(**kwargs)
     elif sql_dialect == "PostgreSQL":
         conn = connect_postgresql()
     else:
@@ -48,8 +55,8 @@ def connect_db(sql_dialect, db_path):
     return conn
 
 
-def execute_sql(predicted_sql, ground_truth, db_path, sql_dialect, calculate_func):
-    conn = connect_db(sql_dialect, db_path)
+def execute_sql(predicted_sql, ground_truth, db_path, sql_dialect, calculate_func, *args, **kwargs):
+    conn = connect_db(sql_dialect, db_path, *args, **kwargs)
     # Connect to the database
     cursor = conn.cursor()
     cursor.execute(predicted_sql)
@@ -62,24 +69,25 @@ def execute_sql(predicted_sql, ground_truth, db_path, sql_dialect, calculate_fun
 
 # FIXED!
 def package_sqls(
-    sql_path, db_root_path, engine, sql_dialect="SQLite", mode="gpt", data_mode="dev"
+    gold_sql_path, predicted_json_path, db_root_path, engine, sql_dialect="SQLite", mode="gpt", data_mode="dev"
 ):
     clean_sqls = []
     db_path_list = []
     if mode == "gpt":
-        sql_data = json.load(
-            open(
-                sql_path
-                + "predict_"
-                + data_mode
-                + "_"
-                + engine
-                + "_"
-                + sql_dialect.lower()
-                + ".json",
-                "r",
-            )
-        )
+        # sql_data = json.load(
+        #     open(
+        #         sql_path
+        #         + "predict_"
+        #         + data_mode
+        #         + "_"
+        #         + engine
+        #         + "_"
+        #         + sql_dialect.lower()
+        #         + ".json",
+        #         "r",
+        #     )
+        # )
+        sql_data = json.load(open(predicted_json_path))
         for _, sql_str in sql_data.items():
             if type(sql_str) == str:
                 sql, db_name = sql_str.split("\t----- bird -----\t")
@@ -90,7 +98,8 @@ def package_sqls(
 
     elif mode == "gt":
         # fixed : sql_dialect lower()
-        sqls = open(sql_path + data_mode + "_" + sql_dialect.lower() + "_gold.sql")
+        # sqls = open(sql_path + data_mode + "_" + sql_dialect.lower() + "_gold.sql")
+        sqls = open(gold_sql_path)
         sql_txt = sqls.readlines()
         # sql_txt = [sql.split('\t')[0] for sql in sql_txt]
         for idx, sql_str in enumerate(sql_txt):

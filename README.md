@@ -1,6 +1,20 @@
 # text2sql-evaluation
 - Forked from https://github.com/bird-bench/mini_dev
 - main branch is using MySQL
+- mysql-integration branch is developed for merging as API server.
+
+## To-do list for integration (2024/07/31)
+1. Find which script should be included in integrated code
+  - llm/run/
+  - llm/src/
+2. Modifying text2sql-evaluation/llm/run/run_evaluation.sh
+  - 일단 다 고친 후, 위 shell file 정상 작동되는지 확인하면 됨
+  - 코드 수정의 가장 큰 이슈는, 그냥 파일명 때려넣어도 돌아가게 하면 됨
+    - evaluation_ex.py
+    - evaluation_f1.py
+    - evaluation_ves.py
+    - evaluation_utils.py
+3. Modifying sources under llm/src/
 
 ## How to run
 

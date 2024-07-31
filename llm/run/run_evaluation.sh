@@ -7,13 +7,15 @@
 ################################################################################################
 ################################################################################################
 
-db_root_path='dummy/'
+db_root_path='dummy/' # => 필요 없지 않나? deprecated로 하는게 좋을 듯
 data_mode='mini_dev' # dev, train, mini_dev => 그냥 이름붙일 때 사용, 빼도 됨 
+
+gold_sql_path='./data/mini_dev_mysql_gold.sql'
 diff_json_path='./data/mini_dev_mysql.json' # _sqlite.json, _mysql.json, _postgresql.json
 # Path where the predicted SQL queries are stored
-predicted_sql_path='./exp_result/sql_output_kg/'
+predicted_json_path='./exp_result/sql_output_kg/predict_mini_dev_gpt-4_mysql.json' # 이걸 파일 명으로 해야함
 
-ground_truth_path='./data/'
+ground_truth_path='./data/' # 이거도 파일명으로 해야 함
 num_cpus=16
 meta_time_out=30.0
 mode_gt='gt'
@@ -32,16 +34,16 @@ test_dir="test_results/${engine}_${sql_dialect}_${timestamp}"
 mkdir -p "${test_dir}"
 
 echo "starting to compare with knowledge for ex engine: ${engine} sql_dialect: ${sql_dialect}"
-python3 -u ./src/evaluation_ex.py --db_root_path ${db_root_path} --predicted_sql_path ${predicted_sql_path} --data_mode ${data_mode} \
---ground_truth_path ${ground_truth_path} --num_cpus ${num_cpus} --mode_gt ${mode_gt} --mode_predict ${mode_predict} \
+python3 -u ./src/evaluation_ex.py --db_root_path ${db_root_path} --predicted_json_path ${predicted_json_path} --data_mode ${data_mode} \
+--ground_truth_path ${ground_truth_path} --num_cpus ${num_cpus} --mode_gt ${mode_gt} --mode_predict ${mode_predict} --gold_sql_path ${gold_sql_path} \
 --diff_json_path ${diff_json_path} --meta_time_out ${meta_time_out} --engine ${engine} --sql_dialect ${sql_dialect} --test_dir ${test_dir}
 
 echo "starting to compare with knowledge for ves engine: ${engine} sql_dialect: ${sql_dialect}"
-python3 -u ./src/evaluation_ves.py --db_root_path ${db_root_path} --predicted_sql_path ${predicted_sql_path} --data_mode ${data_mode} \
---ground_truth_path ${ground_truth_path} --num_cpus ${num_cpus} --mode_gt ${mode_gt} --mode_predict ${mode_predict} \
+python3 -u ./src/evaluation_ves.py --db_root_path ${db_root_path} --predicted_sql_path ${predicted_json_path} --data_mode ${data_mode} \
+--ground_truth_path ${ground_truth_path} --num_cpus ${num_cpus} --mode_gt ${mode_gt} --mode_predict ${mode_predict} --gold_sql_path ${gold_sql_path} \
 --diff_json_path ${diff_json_path} --meta_time_out ${meta_time_out} --engine ${engine} --sql_dialect ${sql_dialect} --test_dir ${test_dir}
 
 echo "starting to compare with knowledge for soft-f1 engine: ${engine} sql_dialect: ${sql_dialect}"
-python3 -u ./src/evaluation_f1.py --db_root_path ${db_root_path} --predicted_sql_path ${predicted_sql_path} --data_mode ${data_mode} \
---ground_truth_path ${ground_truth_path} --num_cpus ${num_cpus} --mode_gt ${mode_gt} --mode_predict ${mode_predict} \
+python3 -u ./src/evaluation_f1.py --db_root_path ${db_root_path} --predicted_sql_path ${predicted_json_path} --data_mode ${data_mode} \
+--ground_truth_path ${ground_truth_path} --num_cpus ${num_cpus} --mode_gt ${mode_gt} --mode_predict ${mode_predict} --gold_sql_path ${gold_sql_path} \
 --diff_json_path ${diff_json_path} --meta_time_out ${meta_time_out} --engine ${engine} --sql_dialect ${sql_dialect} --test_dir ${test_dir}
